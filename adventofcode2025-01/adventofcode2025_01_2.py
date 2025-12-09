@@ -1,29 +1,45 @@
-with open("./input.txt", "r") as archivo:
-    lineas = list(archivo)
+import sys
+def leer_archivo()->list[str]:
+    try:
+        with open(sys.argv[1], "r") as archivo:
+            lista_lineas = archivo.read().splitlines()
+        return lista_lineas
+    except FileNotFoundError:
+        print(f"Error. Archivo {sys.argv[1]} no encontrado")
+        exit()
 
-contador_numero_seguros = 0
+def obtener_cantidad_veces_0(lista_lineas:list[str])->int:
+    indice = 50 # El valor inicial es 50
+    contador = 0 # Contador del número de apariciones de 0 en la combinación.
+    for linea in lista_lineas:
+        numero_a_sumar = 0
+        numero_a_restar = 0
+        if linea[0] == "L":
+            numero_a_restar = int(linea[1:])
+            for _ in range(numero_a_restar):
+                if indice == 0:
+                    indice = 99
+                else:
+                    indice -= 1
+                if indice == 0:
+                    contador += 1    
+        elif linea[0] == "R":
+            numero_a_sumar = int(linea[1:])
+            for _ in range(numero_a_sumar):
+                if indice == 99:
+                    indice = 0
+                else:
+                    indice += 1
+                if indice == 0:
+                    contador += 1
+    return contador
+    
 
-def es_seguro(lista):
-    if len(lista) < 2:
-        return False
-    if (lista == sorted(lista) or lista == sorted(lista, reverse=True)):
-        for i in range(len(lista) - 1):
-            if not (1 <= abs(lista[i] - lista[i+1]) <= 3):
-                return False
-        return True
-    return False
+def main():
+    lista_lineas = leer_archivo()
+    contador = obtener_cantidad_veces_0(lista_lineas)
+    print(contador)
 
-for linea in lineas:
-    numeros = list(map(int,linea.split()))
-    segura = es_seguro(numeros)
-    if segura:
-        contador_numero_seguros += 1
-    else:
-        dampener_aplicado = 0
-        for j in range(len(numeros)):
-            modificado = numeros[:j] + numeros[j+1:]
-            if es_seguro(modificado):
-                dampener_aplicado = 1
-        contador_numero_seguros += dampener_aplicado
-
-print(contador_numero_seguros)
+if __name__ == "__main__":
+    main()
+    
