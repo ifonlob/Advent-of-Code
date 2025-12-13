@@ -6,7 +6,7 @@ def leer_archivo() -> list[str]:
             lista_rangos = texto.split(",")
         return lista_rangos
     except FileNotFoundError:
-        print(f"Error. Archivo {sys.argv[1]} no encontrado")
+        print(f"Error. Archivo 'input.txt' no encontrado")
         sys.exit(1)
 
 def obtener_ids_invalidos(rangos:list[str])->int:
@@ -27,9 +27,6 @@ def obtener_ids_invalidos(rangos:list[str])->int:
                         numero_invalido_encontrado = True
                 k += 1
     return contador
-
-    
-
 
 def main():
     rangos = leer_archivo()
