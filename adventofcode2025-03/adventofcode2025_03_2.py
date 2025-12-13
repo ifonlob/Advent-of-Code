@@ -2,38 +2,32 @@ import sys
 def leer_archivo() -> list[str]:
     try:
         with open('input.txt', "r") as archivo:
-            texto = archivo.read().strip()
-            lista_rangos = texto.split(",")
-        return lista_rangos
+            lista_bancos = archivo.read().strip().splitlines()
+        return lista_bancos
     except FileNotFoundError:
-        print(f"Error. Archivo {sys.argv[1]} no encontrado")
+        print(f"Error. Archivo 'input.txt' no encontrado")
         sys.exit(1)
-
-def obtener_ids_invalidos(rangos:list[str])->int:
+        
+def obtener_descarga_mas_alta(lista_bancos:list[str])->int:
     contador = 0
-    for rango in rangos:
-        numeros = rango.split("-")
-        numero1 = int(numeros[0])
-        numero2 = int(numeros[1])
-        for numero in range(numero1,numero2 + 1):
-            numero_invalido_encontrado = False
-            k = 2
-            numero_cadena = str(numero)
-            longitud_numero = len(numero_cadena)
-            while k < (longitud_numero + 1) and not numero_invalido_encontrado:
-                if longitud_numero % k == 0:
-                    if numero_cadena[:(longitud_numero//k)] * k == numero_cadena:
-                        contador += numero
-                        numero_invalido_encontrado = True
-                k += 1
+    for banco in lista_bancos:
+        numeros_banco = list(map(int,banco))
+        numeros_a_eliminar = len(banco) - 12
+        voltaje_maximo = [numeros_banco[0]]
+        for numero in numeros_banco[1:]:
+            while voltaje_maximo and numeros_a_eliminar > 0 and voltaje_maximo[-1] < numero:
+                voltaje_maximo.pop()
+                numeros_a_eliminar -= 1
+            voltaje_maximo.append(numero)
+        if numeros_a_eliminar > 0:
+            voltaje_maximo = voltaje_maximo[:-numeros_a_eliminar]
+        voltaje_maximo = voltaje_maximo[:12]
+        voltaje_maximo = list(map(str,voltaje_maximo))
+        contador += int("".join(voltaje_maximo))
     return contador
-
-    
-
-
 def main():
-    rangos = leer_archivo()
-    contador = obtener_ids_invalidos(rangos)
+    lista_bancos = leer_archivo()
+    contador = obtener_descarga_mas_alta(lista_bancos)
     print(contador)
 
 if __name__ == "__main__":
