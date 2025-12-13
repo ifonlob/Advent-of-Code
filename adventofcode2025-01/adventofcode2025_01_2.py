@@ -1,11 +1,11 @@
 import sys
 def leer_archivo()->list[str]:
     try:
-        with open(sys.argv[1], "r") as archivo:
+        with open('input.txt', "r") as archivo:
             lista_lineas = archivo.read().splitlines()
         return lista_lineas
     except FileNotFoundError:
-        print(f"Error. Archivo {sys.argv[1]} no encontrado")
+        print(f"Error. Archivo 'input.txt' no encontrado")
         exit()
 
 def obtener_cantidad_veces_0(lista_lineas:list[str])->int:
